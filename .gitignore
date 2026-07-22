@@ -31,3 +31,4 @@ Thumbs.db
 tunnel.log
 cloudflared.exe
 backend/static/
+cloudflared.exe 
