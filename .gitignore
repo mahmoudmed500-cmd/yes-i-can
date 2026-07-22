@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Build
+frontend/dist/
+
+# Database (local only)
+*.db
+*.db-wal
+*.db-shm
+
+# Environment
+.env
+backend/.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+.pytest_cache/
+
+# Generated
+tunnel.log
+cloudflared.exe
+backend/static/
