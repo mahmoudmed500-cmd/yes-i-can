@@ -251,6 +251,11 @@ def search(q: str, user=Depends(auth.get_current_user), conn=Depends(get_db)):
     return [row_to_user_out(r) for r in rows if r["role"] in ("teacher", "student")]
 
 
+@app.get("/")
+def root():
+    return "Hello World"
+
+
 # ---------------------------------------------------------------------------
 # Serve frontend (SPA) — must be last so API routes take priority
 # ---------------------------------------------------------------------------
