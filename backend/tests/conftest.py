@@ -34,9 +34,9 @@ def client():
 @pytest.fixture
 def admin_token(client):
     conn = database.get_connection()
-    crud.create_user(conn, "admin", auth.hash_password("admin123"), "admin", "Test Admin")
+    crud.create_user(conn, "admin", auth.hash_password("Admin123x"), "admin", "Test Admin")
     conn.close()
-    resp = client.post("/auth/login", data={"username": "admin", "password": "admin123"})
+    resp = client.post("/auth/login", data={"username": "admin", "password": "Admin123x"})
     assert resp.status_code == 200
     return resp.json()["access_token"]
 

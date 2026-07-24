@@ -3,7 +3,7 @@ from datetime import date, timedelta
 
 def _create_student(client, headers, username="student1"):
     return client.post("/users", json={
-        "username": username, "password": "pw123456", "role": "student", "full_name": "Test Student",
+        "username": username, "password": "Pw123456x", "role": "student", "full_name": "Test Student",
     }, headers=headers).json()
 
 

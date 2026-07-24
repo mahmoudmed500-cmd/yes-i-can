@@ -1,9 +1,9 @@
 def _setup_base_entities(client, headers):
     teacher = client.post("/users", json={
-        "username": "teacher1", "password": "pw123456", "role": "teacher", "full_name": "Teacher One",
+        "username": "teacher1", "password": "Pw123456x", "role": "teacher", "full_name": "Teacher One",
     }, headers=headers).json()
     teacher2 = client.post("/users", json={
-        "username": "teacher2", "password": "pw123456", "role": "teacher", "full_name": "Teacher Two",
+        "username": "teacher2", "password": "Pw123456x", "role": "teacher", "full_name": "Teacher Two",
     }, headers=headers).json()
     room_a = client.post("/classrooms", json={"name": "Room A", "capacity": 10}, headers=headers).json()
     room_b = client.post("/classrooms", json={"name": "Room B", "capacity": 10}, headers=headers).json()

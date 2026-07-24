@@ -93,6 +93,7 @@ const translations = {
     phone: "Phone (optional)",
     specialty: "Specialty (e.g. IELTS, Kids English)",
     level: "Level (e.g. Beginner)",
+    passwordHint: "Strong password (8+ chars, A-Z, a-z, 0-9)",
     active: "active",
     inactive: "inactive",
     deactivate: "Deactivate",

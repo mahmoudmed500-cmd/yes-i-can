@@ -5,9 +5,9 @@ def test_login_fails_with_wrong_password(client, auth_headers):
 
 def test_teacher_cannot_create_schedule(client, auth_headers):
     client.post("/users", json={
-        "username": "t.only", "password": "pw123456", "role": "teacher", "full_name": "Just A Teacher",
+        "username": "t.only", "password": "Pw123456x", "role": "teacher", "full_name": "Just A Teacher",
     }, headers=auth_headers)
-    login = client.post("/auth/login", data={"username": "t.only", "password": "pw123456"})
+    login = client.post("/auth/login", data={"username": "t.only", "password": "Pw123456x"})
     teacher_headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
 
     room = client.post("/classrooms", json={"name": "Room X"}, headers=auth_headers).json()
@@ -24,10 +24,10 @@ def test_teacher_cannot_create_schedule(client, auth_headers):
 
 def test_teacher_only_sees_own_schedule(client, auth_headers):
     t1 = client.post("/users", json={
-        "username": "teach.a", "password": "pw123456", "role": "teacher", "full_name": "Teacher A",
+        "username": "teach.a", "password": "Pw123456x", "role": "teacher", "full_name": "Teacher A",
     }, headers=auth_headers).json()
     t2 = client.post("/users", json={
-        "username": "teach.b", "password": "pw123456", "role": "teacher", "full_name": "Teacher B",
+        "username": "teach.b", "password": "Pw123456x", "role": "teacher", "full_name": "Teacher B",
     }, headers=auth_headers).json()
     room = client.post("/classrooms", json={"name": "Room X"}, headers=auth_headers).json()
     group = client.post("/groups", json={"name": "Group X"}, headers=auth_headers).json()
@@ -43,7 +43,7 @@ def test_teacher_only_sees_own_schedule(client, auth_headers):
         "start_time": "09:00", "end_time": "10:00",
     }, headers=auth_headers)
 
-    login = client.post("/auth/login", data={"username": "teach.a", "password": "pw123456"})
+    login = client.post("/auth/login", data={"username": "teach.a", "password": "Pw123456x"})
     teacher_headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
 
     resp = client.get("/schedules", headers=teacher_headers)

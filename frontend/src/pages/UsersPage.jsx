@@ -7,6 +7,14 @@ const emptyForm = {
   username: "", password: "", role: "student", full_name: "", email: "", phone: "", specialty: "", level: "",
 };
 
+function validatePassword(pw) {
+  if (pw.length < 8) return "8+ chars";
+  if (!/[A-Z]/.test(pw)) return "needs uppercase";
+  if (!/[a-z]/.test(pw)) return "needs lowercase";
+  if (!/[0-9]/.test(pw)) return "needs a number";
+  return "";
+}
+
 export default function UsersPage() {
   const { t, isArabic } = useI18n();
   const [users, setUsers] = useState([]);
@@ -25,6 +33,8 @@ export default function UsersPage() {
   async function handleCreate(e) {
     e.preventDefault();
     setError("");
+    const pwError = validatePassword(form.password);
+    if (pwError) { setError(pwError); return; }
     try {
       await api.createUser(form);
       setForm(emptyForm);
@@ -62,7 +72,7 @@ export default function UsersPage() {
             <option value="teacher">{t("teachersFilter")}</option>
           </select>
           <input className="input-field" placeholder={t("username")} required value={form.username} onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))} />
-          <input className="input-field" type="password" placeholder={t("password")} required value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} />
+          <input className="input-field" type="password" placeholder={isArabic ? "كلمة مرور قوية (8+ حروف)" : "Strong password (8+ chars, A-Z, a-z, 0-9)"} required value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} />
           <input className="input-field" placeholder={t("email")} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
           <input className="input-field" placeholder={t("phone")} value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
           {form.role === "teacher" ? (

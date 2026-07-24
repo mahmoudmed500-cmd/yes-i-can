@@ -1,7 +1,20 @@
+import re
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+
+def _validate_password(pw: str) -> str:
+    if len(pw) < 8:
+        raise ValueError("Password must be at least 8 characters")
+    if not re.search(r"[A-Z]", pw):
+        raise ValueError("Password must contain at least one uppercase letter")
+    if not re.search(r"[a-z]", pw):
+        raise ValueError("Password must contain at least one lowercase letter")
+    if not re.search(r"[0-9]", pw):
+        raise ValueError("Password must contain at least one number")
+    return pw
 
 
 # ---------- Auth ----------
@@ -29,6 +42,11 @@ class UserCreate(BaseModel):
     specialty: Optional[str] = None  # teacher
     level: Optional[str] = None      # student
 
+    @field_validator("password")
+    @classmethod
+    def password_strong(cls, v):
+        return _validate_password(v)
+
 
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
@@ -38,6 +56,13 @@ class UserUpdate(BaseModel):
     level: Optional[str] = None
     is_active: Optional[bool] = None
     password: Optional[str] = None
+
+    @field_validator("password")
+    @classmethod
+    def password_strong(cls, v):
+        if v is not None:
+            return _validate_password(v)
+        return v
 
 
 class UserOut(BaseModel):

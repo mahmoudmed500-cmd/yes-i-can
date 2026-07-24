@@ -25,14 +25,14 @@ def run():
             return existing
         return crud.create_user(conn, username, auth.hash_password(password), role, full_name, **kw)
 
-    admin = ensure_user("admin", "admin123", "admin", "Center Director")
-    t1 = ensure_user("j.smith", "teach123", "teacher", "James Smith", specialty="IELTS, Business English")
-    t2 = ensure_user("a.hassan", "teach123", "teacher", "Amina Hassan", specialty="Kids English, Conversation")
+    admin = ensure_user("admin", "Yic@Admin2024", "admin", "Center Director")
+    t1 = ensure_user("j.smith", "Teach#2024x", "teacher", "James Smith", specialty="IELTS, Business English")
+    t2 = ensure_user("a.hassan", "Teach#2024x", "teacher", "Amina Hassan", specialty="Kids English, Conversation")
 
-    s1 = ensure_user("m.ali", "student123", "student", "Mohamed Ali", level="Intermediate")
-    s2 = ensure_user("f.brahim", "student123", "student", "Fatima Brahim", level="Beginner")
-    s3 = ensure_user("o.sidi", "student123", "student", "Omar Sidi", level="Advanced")
-    s4 = ensure_user("n.mint", "student123", "student", "Nour Mint", level="Intermediate")
+    s1 = ensure_user("m.ali", "Stud#2024x", "student", "Mohamed Ali", level="Intermediate")
+    s2 = ensure_user("f.brahim", "Stud#2024x", "student", "Fatima Brahim", level="Beginner")
+    s3 = ensure_user("o.sidi", "Stud#2024x", "student", "Omar Sidi", level="Advanced")
+    s4 = ensure_user("n.mint", "Stud#2024x", "student", "Nour Mint", level="Intermediate")
 
     # --- Classrooms ---
     def ensure_classroom(name, capacity=15):
@@ -108,7 +108,7 @@ def run():
 
     conn.close()
     print("Seed complete.")
-    print("Login with: admin/admin123, j.smith/teach123, a.hassan/teach123, m.ali/student123, etc.")
+    print("Login with: admin/Yic@Admin2024, j.smith/Teach#2024x, a.hassan/Teach#2024x, m.ali/Stud#2024x, etc.")
 
 
 if __name__ == "__main__":
