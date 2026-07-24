@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
+import { api } from "../api.js";
 import { useI18n } from "../context/I18nContext.jsx";
 
 const DAY_OPTIONS_KEYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-export default function ScheduleModal({ mode, initial, teachers, classrooms, groups, onClose, onSave }) {
+export default function ScheduleModal({ mode, initial, teachers, classrooms, groups, onClose, onSave, onClassroomCreated }) {
   const { t, isArabic } = useI18n();
   const isReschedule = mode === "reschedule";
   const [form, setForm] = useState({
@@ -21,10 +22,24 @@ export default function ScheduleModal({ mode, initial, teachers, classrooms, gro
   const [error, setError] = useState("");
   const [conflicts, setConflicts] = useState([]);
   const [busy, setBusy] = useState(false);
+  const [showClassroomForm, setShowClassroomForm] = useState(false);
+  const [newClassroomName, setNewClassroomName] = useState("");
 
   useEffect(() => { setError(""); setConflicts([]); }, [form]);
 
   function update(field, value) { setForm((f) => ({ ...f, [field]: value })); }
+
+  async function handleCreateClassroom(e) {
+    e.preventDefault();
+    if (!newClassroomName.trim()) return;
+    try {
+      const created = await api.createClassroom({ name: newClassroomName.trim(), capacity: 15 });
+      setNewClassroomName("");
+      setShowClassroomForm(false);
+      update("classroom_id", created.id);
+      onClassroomCreated?.();
+    } catch (err) { setError(err.message); }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -83,9 +98,21 @@ export default function ScheduleModal({ mode, initial, teachers, classrooms, gro
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700">{t("classroom")}</label>
-              <select className="input-field" value={form.classroom_id} onChange={(e) => update("classroom_id", e.target.value)}>
-                {classrooms.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
-              </select>
+              <div className="flex gap-1">
+                <select className="input-field flex-1" value={form.classroom_id} onChange={(e) => update("classroom_id", e.target.value)}>
+                  {classrooms.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
+                </select>
+                <button type="button" className="shrink-0 rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                  onClick={() => setShowClassroomForm((s) => !s)} title={isArabic ? "إضافة قاعة" : "Add classroom"}>
+                  +
+                </button>
+              </div>
+              {showClassroomForm && (
+                <form onSubmit={handleCreateClassroom} className="mt-2 flex gap-1">
+                  <input className="input-field flex-1" placeholder={isArabic ? "اسم القاعة" : "Classroom name"} value={newClassroomName} onChange={(e) => setNewClassroomName(e.target.value)} required />
+                  <button type="submit" className="shrink-0 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700">{t("save")}</button>
+                </form>
+              )}
             </div>
           </div>
 

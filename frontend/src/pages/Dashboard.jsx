@@ -264,6 +264,7 @@ export default function Dashboard() {
           groups={groups}
           onClose={() => setScheduleModal(null)}
           onSave={handleScheduleSave}
+          onClassroomCreated={loadAll}
         />
       )}
 
