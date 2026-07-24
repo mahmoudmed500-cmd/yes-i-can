@@ -145,7 +145,14 @@ def create_group(payload: schemas.GroupCreate, admin=Depends(auth.require_roles(
 
 @app.get("/groups", response_model=list[schemas.GroupOut])
 def list_groups(user=Depends(auth.get_current_user), conn=Depends(get_db)):
-    return crud.list_groups(conn)
+    if user["role"] == "admin":
+        return crud.list_groups(conn)
+    if user["role"] == "teacher":
+        group_ids = list({s["group_id"] for s in crud.list_schedules(conn, teacher_id=user["user_id"])})
+        return [g for g in crud.list_groups(conn) if g["id"] in group_ids]
+    # student
+    all_groups = crud.list_groups(conn)
+    return [g for g in all_groups if user["user_id"] in g.get("member_ids", [])]
 
 
 @app.post("/groups/{group_id}/members/{student_id}", response_model=schemas.GroupOut)
