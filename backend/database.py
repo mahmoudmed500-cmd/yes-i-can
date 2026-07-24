@@ -84,6 +84,15 @@ CREATE TABLE IF NOT EXISTS invoices (
     note TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- messages: group chat between teachers and students
+CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+    sender_id INTEGER NOT NULL REFERENCES users(id),
+    text TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
 """
 
 
@@ -100,6 +109,8 @@ def init_db():
         conn.execute("CREATE INDEX IF NOT EXISTS idx_invoices_student_id ON invoices(student_id)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_invoices_due_date ON invoices(due_date)")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_messages_group_id ON messages(group_id)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at)")
         conn.commit()
     finally:
         conn.close()

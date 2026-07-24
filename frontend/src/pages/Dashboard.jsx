@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import CalendarGrid from "../components/CalendarGrid.jsx";
 import ClassReminders from "../components/ClassReminders.jsx";
+import GroupChat from "../components/GroupChat.jsx";
 import InvoiceModal from "../components/InvoiceModal.jsx";
 import PaymentTracker from "../components/PaymentTracker.jsx";
 import ScheduleModal from "../components/ScheduleModal.jsx";
@@ -15,6 +16,7 @@ import UsersPage from "./UsersPage.jsx";
 
 const TABS = [
   { id: "calendar", key: "schedule", icon: "🗓️" },
+  { id: "chat", key: "groupChat", icon: "💬" },
   { id: "payments", key: "payments", icon: "💳" },
   { id: "directory", key: "directory", icon: "👥" },
 ];
@@ -249,6 +251,8 @@ export default function Dashboard() {
         )}
 
         {tab === "directory" && isAdmin && <UsersPage />}
+
+        {tab === "chat" && <GroupChat groups={groups} />}
       </main>
 
       {scheduleModal && (

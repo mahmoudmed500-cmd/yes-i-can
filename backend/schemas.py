@@ -162,3 +162,18 @@ class InvoiceOut(BaseModel):
     date_received: Optional[str] = None
     note: Optional[str] = None
     is_overdue: bool
+
+
+# ---------- Messages (group chat) ----------
+class MessageCreate(BaseModel):
+    text: str = Field(min_length=1, max_length=2000)
+
+
+class MessageOut(BaseModel):
+    id: int
+    group_id: int
+    sender_id: int
+    sender_name: str
+    sender_role: str
+    text: str
+    created_at: str

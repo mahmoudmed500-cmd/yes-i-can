@@ -252,6 +252,35 @@ def search(q: str, user=Depends(auth.get_current_user), conn=Depends(get_db)):
 
 
 # ---------------------------------------------------------------------------
+# Group chat (messages)
+# ---------------------------------------------------------------------------
+
+def _check_group_access(user, group_id, conn):
+    """Students can only chat in their own group. Teachers/admins can access any group."""
+    if user["role"] == "student":
+        groups = crud.list_groups(conn)
+        user_groups = [g["id"] for g in groups if user["user_id"] in g.get("member_ids", [])]
+        if group_id not in user_groups:
+            raise HTTPException(status_code=403, detail="Not your group")
+    return True
+
+
+@app.get("/groups/{group_id}/messages", response_model=list[schemas.MessageOut])
+def get_messages(group_id: int, before: Optional[int] = None,
+                 user=Depends(auth.get_current_user), conn=Depends(get_db)):
+    _check_group_access(user, group_id, conn)
+    return [dict(m) for m in crud.list_messages(conn, group_id, before_id=before)]
+
+
+@app.post("/groups/{group_id}/messages", response_model=schemas.MessageOut)
+def post_message(group_id: int, payload: schemas.MessageCreate,
+                 user=Depends(auth.get_current_user), conn=Depends(get_db)):
+    _check_group_access(user, group_id, conn)
+    msg = crud.send_message(conn, group_id, user["user_id"], payload.text)
+    return dict(msg)
+
+
+# ---------------------------------------------------------------------------
 # Serve frontend (SPA) — must be last so API routes take priority
 # ---------------------------------------------------------------------------
 

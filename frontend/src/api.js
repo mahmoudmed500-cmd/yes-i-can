@@ -97,6 +97,14 @@ export const api = {
   // dashboard + search
   dashboardSummary: () => request("/dashboard/summary"),
   search: (q) => request(`/search?q=${encodeURIComponent(q)}`),
+
+  // group chat
+  listMessages: (groupId, params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return request(`/groups/${groupId}/messages${qs ? `?${qs}` : ""}`);
+  },
+  sendMessage: (groupId, text) =>
+    request(`/groups/${groupId}/messages`, { method: "POST", body: { text } }),
 };
 
 export { getToken };

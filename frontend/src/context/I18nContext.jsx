@@ -110,6 +110,12 @@ const translations = {
     saturday: "Saturday",
     sunday: "Sunday",
 
+    // Chat
+    groupChat: "Group Chat",
+    typeMessage: "Type a message...",
+    noGroups: "No groups assigned yet.",
+    back: "Back",
+
     // Install PWA
     installTitle: "Install Yes I Can",
     installSubtitle: "Add to your home screen for quick access",
@@ -231,6 +237,12 @@ const translations = {
     friday: "الجمعة",
     saturday: "السبت",
     sunday: "الأحد",
+
+    // Chat
+    groupChat: "دردشة المجموعة",
+    typeMessage: "اكتب رسالة...",
+    noGroups: "لا توجد مجموعات مخصصة بعد.",
+    back: "رجوع",
 
     // Install PWA
     installTitle: "تثبيت Yes I Can",

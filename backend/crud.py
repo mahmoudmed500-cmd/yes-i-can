@@ -445,3 +445,41 @@ def dashboard_summary(conn):
         "overdue_students": [{"student_id": i["student_id"], "student_name": i["student_name"],
                                "amount": i["amount"], "due_date": i["due_date"]} for i in overdue],
     }
+
+
+# ---------------------------------------------------------------------------
+# Messages (group chat)
+# ---------------------------------------------------------------------------
+
+def send_message(conn, group_id: int, sender_id: int, text: str):
+    cur = conn.execute(
+        "INSERT INTO messages (group_id, sender_id, text) VALUES (?, ?, ?)",
+        (group_id, sender_id, text),
+    )
+    conn.commit()
+    return conn.execute(
+        """SELECT m.*, u.full_name AS sender_name, u.role AS sender_role
+           FROM messages m JOIN users u ON m.sender_id = u.id
+           WHERE m.id = ?""",
+        (cur.lastrowid,),
+    ).fetchone()
+
+
+def list_messages(conn, group_id: int, before_id: Optional[int] = None, limit: int = 100):
+    if before_id:
+        rows = conn.execute(
+            """SELECT m.*, u.full_name AS sender_name, u.role AS sender_role
+               FROM messages m JOIN users u ON m.sender_id = u.id
+               WHERE m.group_id = ? AND m.id < ?
+               ORDER BY m.id DESC LIMIT ?""",
+            (group_id, before_id, limit),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            """SELECT m.*, u.full_name AS sender_name, u.role AS sender_role
+               FROM messages m JOIN users u ON m.sender_id = u.id
+               WHERE m.group_id = ?
+               ORDER BY m.id DESC LIMIT ?""",
+            (group_id, limit),
+        ).fetchall()
+    return list(reversed(rows))
