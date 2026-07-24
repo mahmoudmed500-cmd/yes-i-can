@@ -7,6 +7,7 @@ import InvoiceModal from "../components/InvoiceModal.jsx";
 import PaymentTracker from "../components/PaymentTracker.jsx";
 import ScheduleModal from "../components/ScheduleModal.jsx";
 import SearchBar from "../components/SearchBar.jsx";
+import ShareQR from "../components/ShareQR.jsx";
 import StatusAlerts from "../components/StatusAlerts.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useI18n } from "../context/I18nContext.jsx";
@@ -60,6 +61,7 @@ export default function Dashboard() {
 
   const [scheduleModal, setScheduleModal] = useState(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [showShareQR, setShowShareQR] = useState(false);
   const [toast, setToast] = useState("");
   const [loadError, setLoadError] = useState("");
 
@@ -150,6 +152,13 @@ export default function Dashboard() {
               className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50">
               {lang === "en" ? "عربي" : "EN"}
             </button>
+            {isAdmin && (
+              <button onClick={() => setShowShareQR(true)}
+                className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+                title={isArabic ? "مشاركة" : "Share"}>
+                {isArabic ? "مشاركة" : "📲"}
+              </button>
+            )}
             <div className="text-right">
               <p className="text-sm font-medium text-slate-700">{user.full_name}</p>
               <p className="text-xs capitalize text-slate-400">{user.role}</p>
@@ -268,6 +277,7 @@ export default function Dashboard() {
       )}
 
       <ClassReminders schedules={schedules} />
+      {showShareQR && <ShareQR onClose={() => setShowShareQR(false)} />}
     </div>
   );
 }
