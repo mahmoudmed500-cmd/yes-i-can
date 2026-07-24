@@ -250,7 +250,7 @@ export default function Dashboard() {
           />
         )}
 
-        {tab === "directory" && isAdmin && <UsersPage />}
+        {tab === "directory" && isAdmin && <UsersPage onCreated={loadAll} />}
 
         {tab === "chat" && <GroupChat groups={groups} />}
       </main>

@@ -203,6 +203,12 @@ def remove_group_member(group_id: int, student_id: int, admin=Depends(auth.requi
     return crud.remove_group_member(conn, group_id, student_id)
 
 
+@app.delete("/groups/{group_id}")
+def delete_group(group_id: int, admin=Depends(auth.require_roles("admin")), conn=Depends(get_db)):
+    crud.delete_group(conn, group_id)
+    return {"ok": True}
+
+
 # ---------------------------------------------------------------------------
 # Schedules  (admin: full control; teacher/student: read-only, filtered)
 # ---------------------------------------------------------------------------

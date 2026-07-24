@@ -116,6 +116,13 @@ def list_groups(conn):
     return [get_group(conn, r["id"]) for r in rows]
 
 
+def delete_group(conn, group_id: int):
+    conn.execute("DELETE FROM group_members WHERE group_id = ?", (group_id,))
+    conn.execute("DELETE FROM schedules WHERE group_id = ?", (group_id,))
+    conn.execute("DELETE FROM groups WHERE id = ?", (group_id,))
+    conn.commit()
+
+
 def add_group_member(conn, group_id: int, student_id: int):
     get_group(conn, group_id)
     get_user(conn, student_id)
