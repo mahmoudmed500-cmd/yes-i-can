@@ -1,10 +1,6 @@
-const CACHE_NAME = "yic-v1";
-const PRECACHE = ["/", "/index.html"];
+const CACHE_NAME = "yic-v3";
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE))
-  );
   self.skipWaiting();
 });
 
@@ -20,14 +16,24 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
 
-  // Never cache API calls
+  // Never cache API calls or navigation requests
   if (url.pathname.startsWith("/auth") || url.pathname.startsWith("/users") ||
       url.pathname.startsWith("/schedules") || url.pathname.startsWith("/invoices") ||
       url.pathname.startsWith("/classrooms") || url.pathname.startsWith("/groups") ||
-      url.pathname.startsWith("/dashboard") || url.pathname.startsWith("/search")) {
+      url.pathname.startsWith("/dashboard") || url.pathname.startsWith("/search") ||
+      url.pathname.startsWith("/admin") || url.pathname.startsWith("/messages")) {
     return;
   }
 
+  // Network-first for HTML pages
+  if (e.request.mode === "navigate" || url.pathname === "/") {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // Cache-first for static assets (CSS, JS, images)
   e.respondWith(
     caches.match(e.request).then((cached) => {
       const fetched = fetch(e.request).then((res) => {
