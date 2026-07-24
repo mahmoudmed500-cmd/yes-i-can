@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { api } from "../api.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import { useI18n } from "../context/I18nContext.jsx";
 
 const emptyForm = {
@@ -16,7 +17,9 @@ function validatePassword(pw) {
 }
 
 export default function UsersPage() {
+  const { user } = useAuth();
   const { t, isArabic } = useI18n();
+  const isAdmin = user.role === "admin";
   const [users, setUsers] = useState([]);
   const [roleFilter, setRoleFilter] = useState("all");
   const [showForm, setShowForm] = useState(false);
@@ -94,7 +97,7 @@ export default function UsersPage() {
               <th className="py-2 pr-4">{isArabic ? "الاسم" : "Name"}</th>
               <th className="py-2 pr-4">{isArabic ? "الدور" : "Role"}</th>
               <th className="py-2 pr-4">{isArabic ? "التفاصيل" : "Detail"}</th>
-              <th className="py-2 pr-4">{isArabic ? "جهة الاتصال" : "Contact"}</th>
+              {isAdmin && <th className="py-2 pr-4">{isArabic ? "جهة الاتصال" : "Contact"}</th>}
               <th className="py-2 pr-4">{isArabic ? "الحالة" : "Status"}</th>
               <th className="py-2 pr-4"></th>
             </tr>
@@ -105,7 +108,7 @@ export default function UsersPage() {
                 <td className="py-2 pr-4 font-medium text-slate-800">{u.full_name}</td>
                 <td className="py-2 pr-4 capitalize">{t(u.role === "teacher" ? "teachers" : "students")}</td>
                 <td className="py-2 pr-4 text-slate-500">{u.role === "teacher" ? u.specialty : u.level}</td>
-                <td className="py-2 pr-4 text-slate-500">{u.email || u.phone || "—"}</td>
+                {isAdmin && <td className="py-2 pr-4 text-slate-500">{u.email || u.phone || "—"}</td>}
                 <td className="py-2 pr-4">
                   <span className={`badge ${u.is_active ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}>
                     {u.is_active ? t("active") : t("inactive")}
@@ -119,7 +122,7 @@ export default function UsersPage() {
               </tr>
             ))}
             {users.length === 0 && (
-              <tr><td colSpan={6} className="py-6 text-center text-slate-400">{t("noPeople")}</td></tr>
+              <tr><td colSpan={isAdmin ? 6 : 5} className="py-6 text-center text-slate-400">{t("noPeople")}</td></tr>
             )}
           </tbody>
         </table>

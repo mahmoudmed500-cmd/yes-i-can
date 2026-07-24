@@ -84,12 +84,22 @@ def list_users(role: Optional[str] = None, search: Optional[str] = None,
     if user["role"] not in ("admin", "teacher"):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     rows = crud.list_users(conn, role=role, search=search)
-    return [row_to_user_out(r) for r in rows]
+    users = [row_to_user_out(r) for r in rows]
+    # Strip contact info for non-admins
+    if user["role"] != "admin":
+        for u in users:
+            u["email"] = None
+            u["phone"] = None
+    return users
 
 
 @app.get("/users/{user_id}", response_model=schemas.UserOut)
 def get_user(user_id: int, user=Depends(auth.get_current_user), conn=Depends(get_db)):
-    return row_to_user_out(crud.get_user(conn, user_id))
+    u = row_to_user_out(crud.get_user(conn, user_id))
+    if user["role"] != "admin":
+        u["email"] = None
+        u["phone"] = None
+    return u
 
 
 @app.put("/users/{user_id}", response_model=schemas.UserOut)
@@ -248,7 +258,12 @@ def search(q: str, user=Depends(auth.get_current_user), conn=Depends(get_db)):
     if user["role"] not in ("admin", "teacher"):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     rows = crud.list_users(conn, search=q)
-    return [row_to_user_out(r) for r in rows if r["role"] in ("teacher", "student")]
+    results = [row_to_user_out(r) for r in rows if r["role"] in ("teacher", "student")]
+    if user["role"] != "admin":
+        for r in results:
+            r["email"] = None
+            r["phone"] = None
+    return results
 
 
 # ---------------------------------------------------------------------------
