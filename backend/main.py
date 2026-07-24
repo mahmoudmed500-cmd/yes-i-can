@@ -127,6 +127,34 @@ def delete_user(user_id: int, admin=Depends(auth.require_roles("admin")), conn=D
     return {"ok": True}
 
 
+@app.post("/admin/reset-all")
+def reset_all_data(admin=Depends(auth.require_roles("admin")), conn=Depends(get_db)):
+    """Delete ALL demo data: users (except admin), groups, classrooms, schedules, invoices, messages."""
+    admin_id = admin["user_id"]
+    conn.execute("DELETE FROM messages")
+    conn.execute("DELETE FROM invoices")
+    conn.execute("DELETE FROM schedules")
+    conn.execute("DELETE FROM group_members")
+    conn.execute("DELETE FROM groups")
+    conn.execute("DELETE FROM classrooms")
+    conn.execute("DELETE FROM users WHERE id != ?", (admin_id,))
+    conn.commit()
+    return {"ok": True, "detail": "All demo data removed. Only your admin account remains."}
+
+
+@app.post("/admin/cleanup-demo")
+def cleanup_demo_users(admin=Depends(auth.require_roles("admin")), conn=Depends(get_db)):
+    """Remove known demo/seed accounts but keep schedules, groups, classrooms."""
+    demo_usernames = [
+        "j.smith", "a.hassan", "m.ali", "f.brahim", "o.sidi", "n.mint",
+        "teacher1", "teacher2", "student1",
+    ]
+    placeholders = ",".join("?" * len(demo_usernames))
+    conn.execute(f"DELETE FROM users WHERE username IN ({placeholders})", demo_usernames)
+    conn.commit()
+    return {"ok": True, "detail": f"Removed {len(demo_usernames)} demo accounts."}
+
+
 # ---------------------------------------------------------------------------
 # Classrooms
 # ---------------------------------------------------------------------------

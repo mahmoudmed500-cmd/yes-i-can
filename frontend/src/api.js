@@ -105,6 +105,10 @@ export const api = {
   },
   sendMessage: (groupId, text) =>
     request(`/groups/${groupId}/messages`, { method: "POST", body: { text } }),
+
+  // admin cleanup
+  resetAll: () => request("/admin/reset-all", { method: "POST" }),
+  cleanupDemo: () => request("/admin/cleanup-demo", { method: "POST" }),
 };
 
 export { getToken };

@@ -51,6 +51,14 @@ export default function UsersPage() {
     load();
   }
 
+  async function handleResetAll() {
+    if (!confirm(isArabic ? "هل تريد حذف كل البيانات التجريبية؟" : "Delete ALL demo data? This removes all users, classes, groups, invoices, and messages. Your admin account stays.")) return;
+    try {
+      await api.resetAll();
+      load();
+    } catch (err) { setError(err.message); }
+  }
+
   return (
     <div className="card">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -63,6 +71,10 @@ export default function UsersPage() {
           </select>
           <button className="btn-primary" onClick={() => setShowForm((s) => !s)}>
             {showForm ? t("close") : t("addPerson")}
+          </button>
+          <button className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100"
+            onClick={handleResetAll}>
+            {isArabic ? "🗑️ مسح كل البيانات" : "🗑️ Reset Demo Data"}
           </button>
         </div>
       </div>
