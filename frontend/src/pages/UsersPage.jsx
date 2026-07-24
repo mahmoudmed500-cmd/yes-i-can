@@ -185,9 +185,9 @@ export default function UsersPage({ onCreated }) {
                   <td className="py-2 pr-4 text-slate-500">{(g.member_ids || []).length}</td>
                   {isAdmin && (
                     <td className="py-2 pr-2 text-right space-x-2">
-                      <button className="text-xs font-medium text-brand-700 hover:underline"
+                      <button className="rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100"
                         onClick={() => { setMemberModal(g.id); loadMembers(g.id); }}>
-                        {isArabic ? "إدارة الأعضاء" : "Members"}
+                        {isArabic ? "إضافة أعضاء" : "+ Add Members"}
                       </button>
                       <button className="text-xs font-medium text-red-600 hover:underline"
                         onClick={() => handleDeleteGroup(g.id)}>
@@ -209,10 +209,16 @@ export default function UsersPage({ onCreated }) {
       {memberModal && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 p-4">
           <div className={`max-h-[80vh] w-full max-w-md overflow-y-auto rounded-xl bg-white p-6 shadow-xl ${isArabic ? "text-right" : ""}`}>
-            <h3 className="mb-4 text-lg font-semibold text-slate-800">
-              {isArabic ? "إدارة الأعضاء" : "Manage Members"} — {groups.find((g) => g.id === memberModal)?.name}
+            <h3 className="mb-1 text-lg font-semibold text-slate-800">
+              {isArabic ? "إضافة أعضاء" : "Add Members"} — {groups.find((g) => g.id === memberModal)?.name}
             </h3>
+            <p className="mb-4 text-xs text-slate-400">{isArabic ? "حدد الطلاب لإضافتهم للمجموعة" : "Check students to add them to this group"}</p>
             <div className="space-y-2">
+              {allUsers.filter((u) => u.role === "student").length === 0 && (
+                <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-4 text-center">
+                    <p className="text-sm text-slate-500">{isArabic ? "لا يوجد طلاب بعد. أضف طلاباً أولاً من قسم الأشخاص أعلاه." : "No students yet. Add students first from the People section above."}</p>
+                </div>
+              )}
               {allUsers.filter((u) => u.role === "student").map((u) => {
                 const inGroup = (members[memberModal] || []).includes(u.id);
                 return (
