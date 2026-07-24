@@ -24,18 +24,6 @@ export default function Login() {
     }
   }
 
-  async function handleDemo() {
-    setError("");
-    setBusy(true);
-    try {
-      await login("admin", "admin123");
-    } catch (err) {
-      setError(err.message || t("loginFailed"));
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
     <div className={`flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-700 to-brand-900 px-4 ${isArabic ? "font-arabic" : ""}`}>
       <div className="w-full max-w-sm">
@@ -81,18 +69,7 @@ export default function Login() {
           <button type="submit" disabled={busy} className="btn-primary w-full">
             {busy ? t("signingIn") : t("signIn")}
           </button>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-2 text-slate-400">{t("or")}</span>
-            </div>
-          </div>
-          <button type="button" disabled={busy} onClick={handleDemo}
-            className="w-full rounded-lg border-2 border-brand-600 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-100 disabled:opacity-50">
-            {t("tryDemo")}
-          </button>
+
         </form>
       </div>
     </div>

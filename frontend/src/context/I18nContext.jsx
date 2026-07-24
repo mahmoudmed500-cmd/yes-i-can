@@ -13,8 +13,7 @@ const translations = {
     password: "Password",
     signIn: "Sign in",
     signingIn: "Signing in...",
-    tryDemo: "Try Demo (Admin)",
-    or: "or",
+
     loginFailed: "Login failed",
     sessionExpired: "Session expired",
 
@@ -136,8 +135,7 @@ const translations = {
     password: "كلمة المرور",
     signIn: "تسجيل الدخول",
     signingIn: "جاري تسجيل الدخول...",
-    tryDemo: "تجربة تجريبية (مدير)",
-    or: "أو",
+
     loginFailed: "فشل تسجيل الدخول",
     sessionExpired: "انتهت الجلسة",
 
