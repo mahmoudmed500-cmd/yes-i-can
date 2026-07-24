@@ -118,6 +118,15 @@ export default function UsersPage({ onCreated }) {
     load();
   }
 
+  async function handleDeleteUser(u) {
+    if (!confirm(isArabic ? `حذف "${u.full_name}" نهائياً؟ لا يمكن التراجع.` : `Permanently delete "${u.full_name}"? This cannot be undone.`)) return;
+    try {
+      await api.deleteUser(u.id);
+      load();
+      onCreated?.();
+    } catch (err) { setError(err.message); }
+  }
+
   async function handleResetAll() {
     if (!confirm(isArabic ? "هل تريد حذف كل البيانات التجريبية؟" : "Delete ALL demo data? This removes all users, classes, groups, invoices, and messages. Your admin account stays.")) return;
     try {
@@ -300,9 +309,12 @@ export default function UsersPage({ onCreated }) {
                     {u.is_active ? t("active") : t("inactive")}
                   </span>
                 </td>
-                <td className="py-2 pr-2 text-right">
+                <td className="py-2 pr-2 text-right space-x-2">
                   <button className="text-xs font-medium text-brand-700 hover:underline" onClick={() => handleDeactivate(u)}>
-                    {u.is_active ? (isArabic ? "إزالة" : "Remove") : (isArabic ? "إعادة" : "Restore")}
+                    {u.is_active ? (isArabic ? "إيقاف" : "Suspend") : (isArabic ? "إعادة" : "Restore")}
+                  </button>
+                  <button className="text-xs font-medium text-red-600 hover:underline" onClick={() => handleDeleteUser(u)}>
+                    {isArabic ? "حذف" : "Delete"}
                   </button>
                 </td>
               </tr>
