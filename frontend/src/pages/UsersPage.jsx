@@ -269,7 +269,15 @@ export default function UsersPage({ onCreated }) {
           <input className="input-field" placeholder={t("email")} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
           <input className="input-field" placeholder={t("phone")} value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
           {form.role === "teacher" ? (
-            <input className="input-field col-span-2" placeholder={t("specialty")} value={form.specialty} onChange={(e) => setForm((f) => ({ ...f, specialty: e.target.value }))} />
+            <div className="col-span-2">
+              <label className="mb-1 block text-sm font-medium text-slate-700">{isArabic ? "المستوى" : "Level"}</label>
+              <select className="input-field" value={form.specialty} onChange={(e) => setForm((f) => ({ ...f, specialty: e.target.value }))}>
+                <option value="">{isArabic ? "اختر المستوى" : "Select level"}</option>
+                {LEVELS.map((l) => (
+                  <option key={l.value} value={l.value}>{isArabic ? l.label_ar : l.label_en}</option>
+                ))}
+              </select>
+            </div>
           ) : (
             <div className="col-span-2">
               <label className="mb-1 block text-sm font-medium text-slate-700">{t("level")}</label>
