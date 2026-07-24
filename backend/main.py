@@ -19,6 +19,14 @@ STATIC_DIR = Path(__file__).parent / "static"
 @asynccontextmanager
 async def lifespan(app_instance):
     init_db()
+    # First-run: create default admin if DB is empty
+    conn = get_connection()
+    try:
+        count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        if count == 0:
+            crud.create_user(conn, "admin", auth.hash_password("Yic@Admin2024"), "admin", "Center Director")
+    finally:
+        conn.close()
     yield
 
 
