@@ -110,6 +110,10 @@ export default function UsersPage({ onCreated }) {
   }
 
   async function handleDeactivate(u) {
+    const action = u.is_active
+      ? (isArabic ? `إزالة "${u.full_name}" من المركز؟ لن يتمكن من تسجيل الدخول.` : `Remove "${u.full_name}" from the center? They won't be able to log in.`)
+      : (isArabic ? `إعادة "${u.full_name}" إلى المركز؟` : `Restore "${u.full_name}" to the center?`);
+    if (!confirm(action)) return;
     await api.updateUser(u.id, { is_active: !u.is_active });
     load();
   }
@@ -298,7 +302,7 @@ export default function UsersPage({ onCreated }) {
                 </td>
                 <td className="py-2 pr-2 text-right">
                   <button className="text-xs font-medium text-brand-700 hover:underline" onClick={() => handleDeactivate(u)}>
-                    {u.is_active ? t("deactivate") : t("reactivate")}
+                    {u.is_active ? (isArabic ? "إزالة" : "Remove") : (isArabic ? "إعادة" : "Restore")}
                   </button>
                 </td>
               </tr>
