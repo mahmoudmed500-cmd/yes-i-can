@@ -6,23 +6,34 @@ function getToken() {
 
 async function request(path, { method = "GET", body, formBody, headers = {} } = {}) {
   const token = getToken();
-  const opts = {
-    method,
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-  };
 
-  if (formBody) {
-    opts.body = new URLSearchParams(formBody);
-    opts.headers["Content-Type"] = "application/x-www-form-urlencoded";
-  } else if (body !== undefined) {
-    opts.body = JSON.stringify(body);
-    opts.headers["Content-Type"] = "application/json";
+  async function doFetch() {
+    const opts = {
+      method,
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+    };
+
+    if (formBody) {
+      opts.body = new URLSearchParams(formBody);
+      opts.headers["Content-Type"] = "application/x-www-form-urlencoded";
+    } else if (body !== undefined) {
+      opts.body = JSON.stringify(body);
+      opts.headers["Content-Type"] = "application/json";
+    }
+
+    return fetch(`${BASE_URL}${path}`, opts);
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, opts);
+  let res;
+  try {
+    res = await doFetch();
+  } catch (networkErr) {
+    await new Promise((r) => setTimeout(r, 3000));
+    res = await doFetch();
+  }
 
   if (res.status === 401) {
     localStorage.removeItem("yic_token");
